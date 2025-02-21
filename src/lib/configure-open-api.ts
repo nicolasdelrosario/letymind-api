@@ -19,7 +19,7 @@ export function configureOpenApi(app: AppOpenApi) {
       theme: "kepler",
       defaultHttpClient: {
         targetKey: "js",
-        clientKey: "fetch",
+        clientKey: "axios",
       },
       spec: {
         url: "/doc",
