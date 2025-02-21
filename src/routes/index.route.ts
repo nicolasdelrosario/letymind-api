@@ -5,12 +5,14 @@ import { jsonContent } from "@/helpers/json-content";
 import { createRouter } from "@/lib/create-app";
 import { createMessageObjectSchema } from "@/schemas/create-message-object";
 
-export const index = createRouter()
+export const tags = ["Index"];
+
+export const router = createRouter()
   .openapi(
     createRoute({
-      tags: ["Index"],
       method: "get",
       path: "/",
+      tags,
       responses: {
         [HttpStatusCodes.OK]: jsonContent(
           createMessageObjectSchema("Tasks API"),
