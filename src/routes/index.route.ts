@@ -1,29 +1,26 @@
-import { createRoute, z } from "@hono/zod-openapi";
+import { createRoute } from "@hono/zod-openapi";
 
+import * as HttpStatusCodes from "@/constants/http-status-codes";
+import { jsonContent } from "@/helpers/json-content";
 import { createRouter } from "@/lib/create-app";
+import { createMessageObjectSchema } from "@/schemas/create-message-object";
 
 export const index = createRouter()
   .openapi(
     createRoute({
+      tags: ["Index"],
       method: "get",
       path: "/",
-      description: "Letymind API Index",
       responses: {
-        200: {
-          description: "Successful response",
-          content: {
-            "application/json": {
-              schema: z.object({
-                message: z.string(),
-              }),
-            },
-          },
-        },
+        [HttpStatusCodes.OK]: jsonContent(
+          createMessageObjectSchema("Tasks API"),
+          "Letymind API Index",
+        ),
       },
     }),
     (c) => {
       return c.json({
         message: "Letymind API",
-      });
+      }, HttpStatusCodes.OK);
     },
   );
