@@ -1,6 +1,6 @@
 import type { ZodSchema } from "@/helpers/types";
 
-import { jsonContent } from "@/helpers/json-content.js";
+import { jsonContent } from "@/helpers/json-content";
 
 export function jsonContentRequired<
   T extends ZodSchema,
