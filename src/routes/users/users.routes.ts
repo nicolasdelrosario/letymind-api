@@ -100,6 +100,10 @@ export const patch = createRoute({
       badRequestSchema,
       "Bad request error",
     ),
+    [HttpStatusCodes.CONFLICT]: jsonContent(
+      conflictSchema,
+      "Email already in use",
+    ),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContentOneOf(
       [
         createErrorSchema(patchUserSchema),
