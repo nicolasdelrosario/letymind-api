@@ -98,10 +98,12 @@ export const remove: AppRouteHandler<RemoveRoute> = async (c) => {
   return c.body(null, HttpStatusCodes.NO_CONTENT);
 };
 
-async function isEmailTaken(db: ReturnType<typeof createDB>, email: string) {
-  return await db.query.users.findFirst({
+export async function isEmailTaken(db: ReturnType<typeof createDB>, email: string): Promise<boolean> {
+  const user = await db.query.users.findFirst({
     where(fields, operators) {
       return operators.eq(fields.email, email);
     },
   });
+
+  return Boolean(user);
 }
