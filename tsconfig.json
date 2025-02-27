@@ -11,10 +11,15 @@
     "paths": {
       "@/*": ["./src/*"]
     },
+    "resolveJsonModule": true,
     "types": [
       "@cloudflare/workers-types/2023-07-01"
     ],
     "strict": true,
+    "noEmit": true,
+    "isolatedModules": true,
     "skipLibCheck": true
-  }
+  },
+  "include": ["src/**/*.ts", "src/**/*.tsx"],
+  "exclude": ["node_modules"]
 }
