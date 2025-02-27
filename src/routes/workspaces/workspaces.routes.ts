@@ -5,7 +5,7 @@ import { insertWorkspaceSchema, patchWorkspaceSchema, selectedWorkspacesSchema }
 import { jsonContent } from "@/helpers/json-content";
 import { jsonContentOneOf } from "@/helpers/json-content-one-of";
 import { jsonContentRequired } from "@/helpers/json-content-required";
-import { notFoundSchema } from "@/lib/constants";
+import { badRequestSchema, notFoundSchema } from "@/lib/constants";
 import { createErrorSchema } from "@/schemas/create-error-schema";
 import { IdParamsSchema } from "@/schemas/id-params";
 
@@ -41,6 +41,10 @@ export const create = createRoute({
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
       createErrorSchema(insertWorkspaceSchema),
       "The validation error(s)",
+    ),
+    [HttpStatusCodes.BAD_REQUEST]: jsonContent(
+      badRequestSchema,
+      "Bad request error",
     ),
   },
 });
@@ -87,6 +91,10 @@ export const patch = createRoute({
     [HttpStatusCodes.NOT_FOUND]: jsonContent(
       notFoundSchema,
       "Workspace not found",
+    ),
+    [HttpStatusCodes.BAD_REQUEST]: jsonContent(
+      badRequestSchema,
+      "Bad request error",
     ),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContentOneOf(
       [
