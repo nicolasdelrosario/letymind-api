@@ -66,7 +66,7 @@ export const remove: AppRouteHandler<RemoveRoute> = async (c) => {
   const db = createDB(c.env.DB);
   const { id } = c.req.valid("param");
   const [deleted] = await db.delete(workspaces)
-    .where(eq(workspaces.id, id) && eq(workspaces.isActive, true))
+    .where(eq(workspaces.id, id))
     .returning();
 
   if (!deleted) {
