@@ -13,6 +13,12 @@ export function configureOpenApi(app: AppOpenApi) {
     },
   });
 
+  app.openAPIRegistry.registerComponent("securitySchemes", "bearerAuth", {
+    type: "http",
+    scheme: "bearer",
+    bearerFormat: "JWT",
+  });
+
   app.get(
     "/reference",
     apiReference({
