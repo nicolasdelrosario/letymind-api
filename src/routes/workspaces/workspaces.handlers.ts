@@ -22,6 +22,11 @@ export const list: AppRouteHandler<ListRoute> = async (c) => {
 export const create: AppRouteHandler<CreateRoute> = async (c) => {
   const db = createDB(c.env.DB);
   const workspace = await c.req.json();
+  const { slug } = workspace;
+
+  if (await isSlugTaken(db, slug)) {
+    return c.json({ message: HttpStatusPhrases.CONFLICT }, HttpStatusCodes.CONFLICT);
+  }
 
   const [inserted] = await db.insert(workspaces).values(workspace).returning();
   return c.json(inserted, HttpStatusCodes.CREATED);
@@ -50,6 +55,12 @@ export const patch: AppRouteHandler<PatchRoute> = async (c) => {
   const db = createDB(c.env.DB);
   const { id } = c.req.valid("param");
   const updates = c.req.valid("json");
+  const { slug } = updates;
+
+  if (slug && await isSlugTaken(db, slug)) {
+    return c.json({ message: HttpStatusPhrases.CONFLICT }, HttpStatusCodes.CONFLICT);
+  }
+
   const [workspace] = await db.update(workspaces)
     .set(updates)
     .where(
@@ -79,3 +90,11 @@ export const remove: AppRouteHandler<RemoveRoute> = async (c) => {
 
   return c.body(null, HttpStatusCodes.NO_CONTENT);
 };
+
+async function isSlugTaken(db: ReturnType<typeof createDB>, slug: string) {
+  return await db.query.workspaces.findFirst({
+    where(fields, operators) {
+      return operators.eq(fields.slug, slug);
+    },
+  });
+}
