@@ -25,7 +25,17 @@ export const list: AppRouteHandler<ListRoute> = async (c) => {
 export const create: AppRouteHandler<CreateRoute> = async (c) => {
   const db = createDB(c.env.DB);
   const user = await c.req.json();
-  const { name, password } = user;
+  const { name, password, email } = user;
+
+  const existingEmail = await db.query.users.findFirst({
+    where(fields, operators) {
+      return operators.eq(fields.email, email);
+    },
+  });
+
+  if (existingEmail) {
+    return c.json({ message: HttpStatusPhrases.CONFLICT }, HttpStatusCodes.CONFLICT);
+  }
 
   user.name = capitalizeWords(name);
   user.password = await hashPassword(password);
@@ -58,6 +68,20 @@ export const patch: AppRouteHandler<PatchRoute> = async (c) => {
   const db = createDB(c.env.DB);
   const { id } = c.req.valid("param");
   const updates = c.req.valid("json");
+  const { email } = updates;
+
+  if (email) {
+    const existingEmail = await db.query.users.findFirst({
+      where(fields, operators) {
+        return operators.eq(fields.email, email);
+      },
+    });
+
+    if (existingEmail) {
+      return c.json({ message: HttpStatusPhrases.CONFLICT }, HttpStatusCodes.CONFLICT);
+    }
+  }
+
   const [user] = await db.update(users)
     .set(updates)
     .where(
