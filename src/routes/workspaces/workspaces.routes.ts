@@ -5,7 +5,7 @@ import { insertWorkspaceSchema, patchWorkspaceSchema, selectedWorkspacesSchema }
 import { jsonContent } from "@/helpers/json-content";
 import { jsonContentOneOf } from "@/helpers/json-content-one-of";
 import { jsonContentRequired } from "@/helpers/json-content-required";
-import { badRequestSchema, notFoundSchema } from "@/lib/constants";
+import { badRequestSchema, conflictSchema, notFoundSchema } from "@/lib/constants";
 import { createErrorSchema } from "@/schemas/create-error-schema";
 import { IdParamsSchema } from "@/schemas/id-params";
 
@@ -41,6 +41,10 @@ export const create = createRoute({
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
       createErrorSchema(insertWorkspaceSchema),
       "The validation error(s)",
+    ),
+    [HttpStatusCodes.CONFLICT]: jsonContent(
+      conflictSchema,
+      "Slug already in use",
     ),
     [HttpStatusCodes.BAD_REQUEST]: jsonContent(
       badRequestSchema,
@@ -95,6 +99,10 @@ export const patch = createRoute({
     [HttpStatusCodes.BAD_REQUEST]: jsonContent(
       badRequestSchema,
       "Bad request error",
+    ),
+    [HttpStatusCodes.CONFLICT]: jsonContent(
+      conflictSchema,
+      "Slug already in use",
     ),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContentOneOf(
       [
