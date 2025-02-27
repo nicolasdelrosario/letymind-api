@@ -5,7 +5,7 @@ import { insertSenioritySchema, patchSenioritySchema, selectedSenioritiesSchema 
 import { jsonContent } from "@/helpers/json-content";
 import { jsonContentOneOf } from "@/helpers/json-content-one-of";
 import { jsonContentRequired } from "@/helpers/json-content-required";
-import { badRequestSchema, notFoundSchema } from "@/lib/constants";
+import { badRequestSchema, conflictSchema, notFoundSchema } from "@/lib/constants";
 import { createErrorSchema } from "@/schemas/create-error-schema";
 import { IdParamsSchema } from "@/schemas/id-params";
 
@@ -46,6 +46,10 @@ export const create = createRoute({
     [HttpStatusCodes.BAD_REQUEST]: jsonContent(
       badRequestSchema,
       "Bad request error",
+    ),
+    [HttpStatusCodes.CONFLICT]: jsonContent(
+      conflictSchema,
+      "Name already in use",
     ),
   },
 });
@@ -96,6 +100,10 @@ export const patch = createRoute({
     [HttpStatusCodes.BAD_REQUEST]: jsonContent(
       badRequestSchema,
       "Bad request error",
+    ),
+    [HttpStatusCodes.CONFLICT]: jsonContent(
+      conflictSchema,
+      "Name already in use",
     ),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContentOneOf(
       [
