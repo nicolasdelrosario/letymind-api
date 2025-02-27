@@ -27,13 +27,7 @@ export const create: AppRouteHandler<CreateRoute> = async (c) => {
   const user = await c.req.json();
   const { name, password, email } = user;
 
-  const existingEmail = await db.query.users.findFirst({
-    where(fields, operators) {
-      return operators.eq(fields.email, email);
-    },
-  });
-
-  if (existingEmail) {
+  if (await isEmailTaken(db, email)) {
     return c.json({ message: HttpStatusPhrases.CONFLICT }, HttpStatusCodes.CONFLICT);
   }
 
@@ -70,16 +64,8 @@ export const patch: AppRouteHandler<PatchRoute> = async (c) => {
   const updates = c.req.valid("json");
   const { email } = updates;
 
-  if (email) {
-    const existingEmail = await db.query.users.findFirst({
-      where(fields, operators) {
-        return operators.eq(fields.email, email);
-      },
-    });
-
-    if (existingEmail) {
-      return c.json({ message: HttpStatusPhrases.CONFLICT }, HttpStatusCodes.CONFLICT);
-    }
+  if (email && await isEmailTaken(db, email)) {
+    return c.json({ message: HttpStatusPhrases.CONFLICT }, HttpStatusCodes.CONFLICT);
   }
 
   const [user] = await db.update(users)
@@ -111,3 +97,11 @@ export const remove: AppRouteHandler<RemoveRoute> = async (c) => {
 
   return c.body(null, HttpStatusCodes.NO_CONTENT);
 };
+
+async function isEmailTaken(db: ReturnType<typeof createDB>, email: string) {
+  return await db.query.users.findFirst({
+    where(fields, operators) {
+      return operators.eq(fields.email, email);
+    },
+  });
+}
