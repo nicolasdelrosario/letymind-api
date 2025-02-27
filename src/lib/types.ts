@@ -2,6 +2,7 @@ import type { OpenAPIHono, RouteConfig, RouteHandler } from "@hono/zod-openapi";
 
 export interface AppBindings {
   DB: D1Database;
+  JWT_SECRET: string;
 }
 
 export interface Env {
