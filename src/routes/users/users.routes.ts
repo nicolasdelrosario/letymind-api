@@ -5,7 +5,7 @@ import { insertUserSchema, patchUserSchema, selectedUsersSchema } from "@/db/sch
 import { jsonContent } from "@/helpers/json-content";
 import { jsonContentOneOf } from "@/helpers/json-content-one-of";
 import { jsonContentRequired } from "@/helpers/json-content-required";
-import { notFoundSchema } from "@/lib/constants";
+import { badRequestSchema, conflictSchema, notFoundSchema } from "@/lib/constants";
 import { createErrorSchema } from "@/schemas/create-error-schema";
 import { IdParamsSchema } from "@/schemas/id-params";
 
@@ -41,6 +41,14 @@ export const create = createRoute({
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContent(
       createErrorSchema(insertUserSchema),
       "The validation error(s)",
+    ),
+    [HttpStatusCodes.CONFLICT]: jsonContent(
+      conflictSchema,
+      "Email already in use",
+    ),
+    [HttpStatusCodes.BAD_REQUEST]: jsonContent(
+      badRequestSchema,
+      "Bad request",
     ),
   },
 });
@@ -87,6 +95,10 @@ export const patch = createRoute({
     [HttpStatusCodes.NOT_FOUND]: jsonContent(
       notFoundSchema,
       "User not found",
+    ),
+    [HttpStatusCodes.BAD_REQUEST]: jsonContent(
+      badRequestSchema,
+      "Bad request error",
     ),
     [HttpStatusCodes.UNPROCESSABLE_ENTITY]: jsonContentOneOf(
       [
