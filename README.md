@@ -1,4 +1,4 @@
-# Letymind API
+# Letymind API - Old V
 
 A modern API built with Hono.js and Cloudflare Workers, featuring OpenAPI documentation and robust error handling.
 
